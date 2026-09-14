@@ -25,9 +25,17 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Install Arm GNU Toolchain
-        uses: carlosperate/arm-none-eabi-gcc-action@2ca034649a66909ef5382c90ffb5d26711d2f266 # v1.12.0
-        with:
-          release: 15.2.Rel1
+        env:
+          ARM_TOOLCHAIN_URL: https://developer.arm.com/-/media/Files/downloads/gnu/15.2.rel1/binrel/arm-gnu-toolchain-15.2.rel1-x86_64-arm-none-eabi.tar.xz
+          ARM_TOOLCHAIN_SHA256: 597893282ac8c6ab1a4073977f2362990184599643b4c5ee34870a8215783a16
+        run: |
+          archive="$RUNNER_TEMP/arm-gnu-toolchain.tar.xz"
+          destination="$RUNNER_TEMP/arm-gnu-toolchain"
+          curl --fail --location --retry 3 --output "$archive" "$ARM_TOOLCHAIN_URL"
+          echo "$ARM_TOOLCHAIN_SHA256  $archive" | sha256sum --check --strict
+          mkdir --parents "$destination"
+          tar --extract --xz --file "$archive" --strip-components=1 --directory "$destination"
+          echo "$destination/bin" >> "$GITHUB_PATH"
 
       - name: Show build tool versions
         run: |
@@ -48,4 +56,3 @@ jobs:
           path: build/ci-release/artifacts/
           if-no-files-found: error
           retention-days: 14
-
