@@ -1,0 +1,51 @@
+name: Firmware build
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: firmware-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  stm32g431cb:
+    name: STM32G431CBT6 / Release
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install Arm GNU Toolchain
+        uses: carlosperate/arm-none-eabi-gcc-action@2ca034649a66909ef5382c90ffb5d26711d2f266 # v1.12.0
+        with:
+          release: 15.2.Rel1
+
+      - name: Show build tool versions
+        run: |
+          cmake --version
+          ninja --version
+          arm-none-eabi-gcc --version
+
+      - name: Configure
+        run: cmake --preset ci-release
+
+      - name: Build and verify image
+        run: cmake --build --preset ci-release --verbose
+
+      - name: Upload firmware artifacts
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: openpnp-motion-stm32g431cbt6
+          path: build/ci-release/artifacts/
+          if-no-files-found: error
+          retention-days: 14
+

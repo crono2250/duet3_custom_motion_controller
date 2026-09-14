@@ -1,0 +1,42 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 24,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "ci-release",
+      "displayName": "STM32G431CBT6 Release",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/ci-release",
+      "toolchainFile": "${sourceDir}/cmake/arm-none-eabi-gcc.cmake",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    },
+    {
+      "name": "debug",
+      "displayName": "STM32G431CBT6 Debug",
+      "inherits": "ci-release",
+      "binaryDir": "${sourceDir}/build/debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "ci-release",
+      "configurePreset": "ci-release",
+      "jobs": 2
+    },
+    {
+      "name": "debug",
+      "configurePreset": "debug",
+      "jobs": 2
+    }
+  ]
+}
+

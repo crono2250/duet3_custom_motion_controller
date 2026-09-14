@@ -1,0 +1,11 @@
+artifact=@FIRMWARE_NAME@
+target=STM32G431CBT6
+cpu=Cortex-M4F
+flash_bytes=131072
+sram_bytes=32768
+flash_origin=0x08000000
+bootloader_reserved_bytes=0
+compiler=@CMAKE_C_COMPILER_ID@ @CMAKE_C_COMPILER_VERSION@
+cmsis_core_commit=@CMSIS_CORE_COMMIT@
+cmsis_device_g4_commit=@CMSIS_DEVICE_G4_COMMIT@
+
