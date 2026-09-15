@@ -36,7 +36,7 @@ if(NOT nm_result EQUAL 0)
   message(FATAL_ERROR "arm-none-eabi-nm failed: ${nm_error}")
 endif()
 
-foreach(required_symbol IN ITEMS Reset_Handler main g_target_contract g_bringup_diagnostics TIM2_IRQHandler SysTick_Handler)
+foreach(required_symbol IN ITEMS Reset_Handler main g_target_contract g_bringup_diagnostics TIM2_IRQHandler SysTick_Handler FDCAN1_IT0_IRQHandler)
   if(NOT symbol_table MATCHES "[ \t]${required_symbol}")
     message(FATAL_ERROR "Required symbol is missing from image: ${required_symbol}")
   endif()

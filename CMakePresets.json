@@ -24,6 +24,16 @@
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug"
       }
+    },
+    {
+      "name": "normal-release",
+      "displayName": "STM32G431CBT6 Release / external FDCAN",
+      "inherits": "ci-release",
+      "binaryDir": "${sourceDir}/build/normal-release",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "OPENPNP_FDCAN_MODE": "normal"
+      }
     }
   ],
   "buildPresets": [
@@ -36,7 +46,11 @@
       "name": "debug",
       "configurePreset": "debug",
       "jobs": 2
+    },
+    {
+      "name": "normal-release",
+      "configurePreset": "normal-release",
+      "jobs": 2
     }
   ]
 }
-

@@ -1,5 +1,6 @@
 #include "platform.h"
 
+#include "axis_runtime.h"
 #include "motion_clock.h"
 #include "stm32g4xx_hal.h"
 
@@ -83,21 +84,33 @@ bool platform_init(void)
     g_bringup_diagnostics.stage = BRINGUP_STAGE_MOTION_CLOCK_READY;
 
     clock_sync_init((clock_sync_state_t *)&g_bringup_diagnostics.clock_sync);
-    step_engine_init((step_engine_t *)&g_bringup_diagnostics.step_engine);
 
     g_bringup_diagnostics.stage = BRINGUP_STAGE_FDCAN_TESTING;
     uint16_t receive_timestamp = 0U;
     uint16_t timestamp_after_receive = 0U;
-    const fdcan_loopback_result_t result =
-        fdcan_loopback_run(&receive_timestamp, &timestamp_after_receive);
+    const fdcan_port_mode_t mode = OPENPNP_FDCAN_INTERNAL_LOOPBACK
+                                       ? FDCAN_PORT_MODE_INTERNAL_LOOPBACK
+                                       : FDCAN_PORT_MODE_NORMAL;
+    g_bringup_diagnostics.fdcan_mode = (uint32_t)mode;
+    fdcan_port_result_t result = fdcan_port_init(mode);
+    if ((result == FDCAN_PORT_OK) && (mode == FDCAN_PORT_MODE_INTERNAL_LOOPBACK))
+    {
+        result = fdcan_port_run_loopback_test(&receive_timestamp, &timestamp_after_receive);
+    }
     g_bringup_diagnostics.fdcan_result = (uint32_t)result;
     g_bringup_diagnostics.fdcan_receive_timestamp = receive_timestamp;
     g_bringup_diagnostics.fdcan_timestamp_after_receive = timestamp_after_receive;
 
-    if (result != FDCAN_LOOPBACK_OK)
+    if (result != FDCAN_PORT_OK)
     {
         g_bringup_diagnostics.stage = BRINGUP_STAGE_FAULT;
         return false;
+    }
+
+    if (mode == FDCAN_PORT_MODE_NORMAL)
+    {
+        axis_runtime_init();
+        axis_runtime_enable(false);
     }
 
     g_bringup_diagnostics.stage = BRINGUP_STAGE_READY;

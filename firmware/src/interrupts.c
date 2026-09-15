@@ -1,4 +1,5 @@
 #include "motion_clock.h"
+#include "fdcan_port.h"
 #include "stm32g4xx_hal.h"
 
 void SysTick_Handler(void)
@@ -9,6 +10,11 @@ void SysTick_Handler(void)
 void TIM2_IRQHandler(void)
 {
     motion_clock_irq_handler();
+}
+
+void FDCAN1_IT0_IRQHandler(void)
+{
+    fdcan_port_irq_handler();
 }
 
 void HardFault_Handler(void)

@@ -5,8 +5,7 @@
 #include <stdint.h>
 
 #include "clock_sync.h"
-#include "fdcan_loopback.h"
-#include "step_engine.h"
+#include "fdcan_port.h"
 
 #define BRINGUP_DIAGNOSTICS_MAGIC 0x47343331UL
 #define BRINGUP_DIAGNOSTICS_VERSION 1UL
@@ -31,10 +30,10 @@ typedef struct
     uint32_t motion_clock_hz;
     uint32_t motion_clock_sample;
     uint32_t fdcan_result;
+    uint32_t fdcan_mode;
     uint32_t fdcan_receive_timestamp;
     uint32_t fdcan_timestamp_after_receive;
     clock_sync_state_t clock_sync;
-    step_engine_t step_engine;
 } bringup_diagnostics_t;
 
 extern volatile bringup_diagnostics_t g_bringup_diagnostics;

@@ -58,12 +58,13 @@ Duet3Expansion/CANlibはCIへまだリンクしていません。まずライセ
 
 1. 本CIでG431のELF/BIN/HEXを再現生成できる。**完了**
 2. 168MHz system clock、750kHz local motion clock、FDCAN内部ループバックを実装する。**実装完了・実機確認待ち**
-3. 評価基板でFDCAN nominal/data phase通信とRX timestampを測定できる。
-4. 750kHzのlocal motion clockとclock sync収束値を1XDと比較できる。
-5. remote GPIO 1入力/1出力がRRFから操作できる。
-6. remote driver 1軸のSTEP/DIRを1XDと比較し、開始時刻・周期・加減速波形が一致する。
-7. Flash/SRAM/ISR負荷に余裕がある場合のみ5軸へ拡張する。
-8. bootloader partitionとCAN updateを確定し、CI linker budgetへ反映する。
+3. 外部FDCAN interrupt queueと単軸STEP/DIR/ENABLE runtimeを実装する。**暫定pinで実装完了・pin確認待ち**
+4. 評価基板でFDCAN nominal/data phase通信とRX timestampを測定できる。
+5. 750kHzのlocal motion clockとclock sync収束値を1XDと比較できる。
+6. remote GPIO 1入力/1出力がRRFから操作できる。
+7. remote driver 1軸のSTEP/DIRを1XDと比較し、開始時刻・周期・加減速波形が一致する。
+8. Flash/SRAM/ISR負荷に余裕がある場合のみ5軸へ拡張する。
+9. bootloader partitionとCAN updateを確定し、CI linker budgetへ反映する。
 
 ## 参照先
 

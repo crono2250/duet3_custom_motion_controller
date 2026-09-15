@@ -13,4 +13,5 @@ system_clock_hz=168000000
 motion_clock_hz=750000
 fdcan_nominal_bitrate=1000000
 fdcan_data_bitrate=3000000
-fdcan_mode=internal_loopback_bringup
+fdcan_mode=@OPENPNP_FDCAN_MODE@
+pin_contract=provisional_lqfp48_v1

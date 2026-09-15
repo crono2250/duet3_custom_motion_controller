@@ -8,6 +8,16 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS OFF)
 
+set(OPENPNP_FDCAN_MODE "loopback" CACHE STRING "FDCAN bring-up mode: loopback or normal")
+set_property(CACHE OPENPNP_FDCAN_MODE PROPERTY STRINGS loopback normal)
+if(OPENPNP_FDCAN_MODE STREQUAL "loopback")
+  set(OPENPNP_FDCAN_INTERNAL_LOOPBACK 1)
+elseif(OPENPNP_FDCAN_MODE STREQUAL "normal")
+  set(OPENPNP_FDCAN_INTERNAL_LOOPBACK 0)
+else()
+  message(FATAL_ERROR "OPENPNP_FDCAN_MODE must be 'loopback' or 'normal'")
+endif()
+
 set(CMSIS_CORE_ROOT "" CACHE PATH "Path to an existing CMSIS_5 checkout")
 set(CMSIS_DEVICE_G4_ROOT "" CACHE PATH "Path to an existing cmsis-device-g4 checkout")
 set(STM32G4_HAL_ROOT "" CACHE PATH "Path to an existing stm32g4xx-hal-driver checkout")
@@ -72,15 +82,16 @@ foreach(required_path IN ITEMS
   endif()
 endforeach()
 
-set(FIRMWARE_NAME "openpnp-motion-stm32g431cb")
+set(FIRMWARE_NAME "openpnp-motion-stm32g431cb-${OPENPNP_FDCAN_MODE}")
 set(ARTIFACT_DIR "${CMAKE_BINARY_DIR}/artifacts")
 set(LINKER_SCRIPT "${CMAKE_CURRENT_SOURCE_DIR}/firmware/linker/STM32G431CBTx_FLASH.ld")
 
 file(MAKE_DIRECTORY "${ARTIFACT_DIR}")
 
 add_executable(firmware
+  firmware/src/axis_runtime_stm32g431.c
   firmware/src/clock_sync.c
-  firmware/src/fdcan_loopback_stm32g431.c
+  firmware/src/fdcan_port_stm32g431.c
   firmware/src/interrupts.c
   firmware/src/main.c
   firmware/src/motion_clock_stm32g431.c
@@ -115,6 +126,7 @@ target_include_directories(firmware PRIVATE
 
 target_compile_definitions(firmware PRIVATE
   STM32G431xx
+  OPENPNP_FDCAN_INTERNAL_LOOPBACK=${OPENPNP_FDCAN_INTERNAL_LOOPBACK}
 )
 
 set(CPU_FLAGS
