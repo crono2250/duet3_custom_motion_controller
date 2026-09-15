@@ -16,9 +16,10 @@ Duet 3 Expansion 1XDをリファレンスに、OpenPnP向け5軸STEP/DIR・リ�
 - PA8 STEP、PB0 DIR、PB1 ENABLEによる単軸runtime（暫定pin contract）
 - 時刻同期、STEP queue、protocol-neutral motion gatewayのnative host単体テスト
 - ELF、BIN、HEX、MAP、サイズ情報の生成
+- projectと固定依存sourceを含む対応source archiveおよびSHA-256の生成
 - ベクタテーブルが`0x08000000`に配置され、割り込みと診断シンボルを含むこと
 
-GitHub Actionsは`main`へのpush、Pull Request、手動実行で起動し、loopback版とnormal版を`openpnp-motion-stm32g431cbt6`という成果物へまとめて14日間保存します。normal版は[暫定ピン契約](docs/pin-contract.md)と実回路が一致するまで書き込まないでください。
+GitHub Actionsは`main`へのpush、Pull Request、手動実行で起動し、loopback版、normal版、同一revisionの対応source archiveを`openpnp-motion-stm32g431cbt6`という成果物へまとめて14日間保存します。normal版は[暫定ピン契約](docs/pin-contract.md)と実回路が一致するまで書き込まないでください。
 
 ## ローカルビルド
 

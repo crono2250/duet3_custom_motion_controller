@@ -25,6 +25,8 @@ MITはGPLv3と組み合わせ可能です。結合imageをGPL-3.0-onlyで配布�
 
 現在のadapter境界は`motion_gateway.h`です。GPL application層はCAN frameをdecodeした後、protocol固有構造体をそのまま渡さず、`motion_gateway_command_t`へ変換します。gatewayはclock lockを要求し、master時刻をlocal 750kHz時刻へ変換してから汎用`step_segment_t`を生成します。
 
+CIは各buildと同じcommitからproject sourceをarchiveし、実際にlinkするCMSIS／STM32 HALの固定revisionも同梱した`openpnp-motion-corresponding-source.tar.gz`を生成します。`SOURCE-MANIFEST.txt`とSHA-256を使い、binaryとsourceの対応を監査できます。
+
 ## 分離できないもの
 
 同じSTM32 firmware imageへstatic linkしたMIT層とGPL層は、directoryやlibrary targetを分けても配布上は一つのprogramです。境界分割はMIT fileの再利用性と出所管理には有効ですが、結合binaryをMITまたはproprietaryにする手段ではありません。

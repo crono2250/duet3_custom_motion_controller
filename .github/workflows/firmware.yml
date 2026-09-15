@@ -85,6 +85,40 @@ jobs:
       - name: Build and verify external FDCAN image
         run: cmake --build --preset normal-release --verbose
 
+      - name: Package corresponding source
+        shell: bash
+        run: |
+          set -euo pipefail
+          source_root="$RUNNER_TEMP/corresponding-source"
+          archive_root="build/distribution-artifacts"
+          mkdir --parents "$source_root" "$archive_root"
+
+          git archive --format=tar --prefix=duet3_custom_motion_controller/ \
+            --output="$RUNNER_TEMP/project-source.tar" HEAD
+          tar --extract --file="$RUNNER_TEMP/project-source.tar" --directory="$source_root"
+
+          git -C build/ci-release/_deps/cmsis_core-src archive --format=tar \
+            --prefix=dependencies/CMSIS_5/ --output="$RUNNER_TEMP/cmsis-core.tar" HEAD
+          git -C build/ci-release/_deps/cmsis_device_g4-src archive --format=tar \
+            --prefix=dependencies/cmsis-device-g4/ --output="$RUNNER_TEMP/cmsis-device-g4.tar" HEAD
+          git -C build/ci-release/_deps/stm32g4_hal-src archive --format=tar \
+            --prefix=dependencies/stm32g4xx-hal-driver/ --output="$RUNNER_TEMP/stm32g4-hal.tar" HEAD
+          tar --extract --file="$RUNNER_TEMP/cmsis-core.tar" --directory="$source_root"
+          tar --extract --file="$RUNNER_TEMP/cmsis-device-g4.tar" --directory="$source_root"
+          tar --extract --file="$RUNNER_TEMP/stm32g4-hal.tar" --directory="$source_root"
+
+          {
+            echo "project_commit=$GITHUB_SHA"
+            echo "cmsis_core_commit=$(git -C build/ci-release/_deps/cmsis_core-src rev-parse HEAD)"
+            echo "cmsis_device_g4_commit=$(git -C build/ci-release/_deps/cmsis_device_g4-src rev-parse HEAD)"
+            echo "stm32g4_hal_commit=$(git -C build/ci-release/_deps/stm32g4_hal-src rev-parse HEAD)"
+          } > "$source_root/SOURCE-MANIFEST.txt"
+
+          tar --create --gzip --file="$archive_root/openpnp-motion-corresponding-source.tar.gz" \
+            --directory="$source_root" .
+          sha256sum "$archive_root/openpnp-motion-corresponding-source.tar.gz" \
+            > "$archive_root/openpnp-motion-corresponding-source.tar.gz.sha256"
+
       - name: Upload firmware artifacts
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
@@ -92,5 +126,6 @@ jobs:
           path: |
             build/ci-release/artifacts/
             build/normal-release/artifacts/
+            build/distribution-artifacts/
           if-no-files-found: error
           retention-days: 14
