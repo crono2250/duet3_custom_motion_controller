@@ -15,3 +15,4 @@ fdcan_nominal_bitrate=1000000
 fdcan_data_bitrate=3000000
 fdcan_mode=@OPENPNP_FDCAN_MODE@
 pin_contract=provisional_lqfp48_v1
+firmware_license=GPL-3.0-only

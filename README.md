@@ -50,6 +50,10 @@ ctest --test-dir build/host-tests --output-on-failure
 
 実機bring-up時の診断方法と合格条件は[bring-upガイド](docs/bringup.md)、現在のLQFP48割当は[暫定ピン契約](docs/pin-contract.md)を参照してください。
 
+## License
+
+汎用STM32／motion-core fileはMITを維持し、Duet由来層は`firmware/duet/`へ隔離してGPL-3.0-onlyで管理します。両者をlinkしたfirmware image全体はGPL-3.0-onlyです。詳細は[ライセンス境界と配布方針](docs/licensing.md)、依存元は[third-party source ledger](THIRD_PARTY.md)を参照してください。
+
 ## 現在の評価
 
 STM32G431への移植は、FDCANとタイマ資源の観点では実行可能です。ただしSTM32G431CBT6はFlashが128KiBしかなく、既存1XD 3.6.3バイナリが119,428 bytesであるため、1XDと同じ16KiBのbootloader領域を仮定すると現状の1軸版さえ収まりません。機能を絞った1軸PoCを先に成立させ、サイズ実測後にG474等への変更要否を判断します。

@@ -1,0 +1,26 @@
+version = 1
+
+[[annotations]]
+path = [
+  ".github/**",
+  ".gitignore",
+  "CMakeLists.txt",
+  "CMakePresets.json",
+  "README.md",
+  "THIRD_PARTY.md",
+  "cmake/**",
+  "docs/**",
+  "firmware/include/**",
+  "firmware/linker/**",
+  "firmware/src/**",
+  "tests/**",
+]
+precedence = "closest"
+SPDX-FileCopyrightText = "2026 cronos"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "firmware/duet/**"
+precedence = "closest"
+SPDX-FileCopyrightText = "2026 cronos"
+SPDX-License-Identifier = "GPL-3.0-only"

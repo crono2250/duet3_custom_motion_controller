@@ -193,6 +193,16 @@ configure_file(
   COPYONLY
 )
 configure_file(
+  LICENSES/GPL-3.0-only.txt
+  "${ARTIFACT_DIR}/LICENSE-GPL-3.0-only.txt"
+  COPYONLY
+)
+configure_file(
+  LICENSES/MIT.txt
+  "${ARTIFACT_DIR}/LICENSE-MIT.txt"
+  COPYONLY
+)
+configure_file(
   "${CMSIS_CORE_ROOT}/LICENSE.txt"
   "${ARTIFACT_DIR}/LICENSE-CMSIS-5.txt"
   COPYONLY
