@@ -153,3 +153,8 @@ uint32_t clock_sync_to_master_time(const clock_sync_state_t *state, uint32_t loc
 {
     return (state == NULL) ? local_time : (local_time - state->local_time_offset);
 }
+
+uint32_t clock_sync_to_local_time(const clock_sync_state_t *state, uint32_t master_time)
+{
+    return (state == NULL) ? master_time : (master_time + state->local_time_offset);
+}

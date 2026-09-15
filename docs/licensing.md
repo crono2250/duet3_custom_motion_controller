@@ -23,6 +23,8 @@ MITはGPLv3と組み合わせ可能です。結合imageをGPL-3.0-onlyで配布�
 6. 依存関係はrevisionとlicenseを`THIRD_PARTY.md`へ記録する。licenseが確認できないsourceは取り込まない。
 7. release tagごとに、binaryと同じrevisionの完全な対応source、build script、linker script、toolchain情報を保存する。
 
+現在のadapter境界は`motion_gateway.h`です。GPL application層はCAN frameをdecodeした後、protocol固有構造体をそのまま渡さず、`motion_gateway_command_t`へ変換します。gatewayはclock lockを要求し、master時刻をlocal 750kHz時刻へ変換してから汎用`step_segment_t`を生成します。
+
 ## 分離できないもの
 
 同じSTM32 firmware imageへstatic linkしたMIT層とGPL層は、directoryやlibrary targetを分けても配布上は一つのprogramです。境界分割はMIT fileの再利用性と出所管理には有効ですが、結合binaryをMITまたはproprietaryにする手段ではありません。

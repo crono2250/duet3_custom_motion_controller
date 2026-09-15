@@ -94,6 +94,7 @@ add_executable(firmware
   firmware/src/fdcan_port_stm32g431.c
   firmware/src/interrupts.c
   firmware/src/main.c
+  firmware/src/motion_gateway.c
   firmware/src/motion_clock_stm32g431.c
   firmware/src/platform_stm32g431.c
   firmware/src/step_engine.c

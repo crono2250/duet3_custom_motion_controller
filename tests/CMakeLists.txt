@@ -24,3 +24,10 @@ add_motion_test(step_engine_test
   step_engine_test.c
   ../firmware/src/step_engine.c
 )
+
+add_motion_test(motion_gateway_test
+  motion_gateway_test.c
+  ../firmware/src/clock_sync.c
+  ../firmware/src/motion_gateway.c
+  ../firmware/src/step_engine.c
+)

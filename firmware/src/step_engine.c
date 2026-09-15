@@ -47,14 +47,19 @@ void step_engine_init(step_engine_t *engine)
     }
 }
 
+bool step_segment_is_valid(const step_segment_t *segment)
+{
+    return (segment != NULL) &&
+           (segment->step_count != 0U) &&
+           (segment->step_period_ticks != 0U) &&
+           (segment->pulse_width_ticks != 0U) &&
+           (segment->pulse_width_ticks < segment->step_period_ticks);
+}
+
 bool step_engine_enqueue(step_engine_t *engine, const step_segment_t *segment)
 {
-    if ((engine == NULL) || (segment == NULL) ||
-        (engine->count >= STEP_ENGINE_QUEUE_CAPACITY) ||
-        (segment->step_count == 0U) ||
-        (segment->step_period_ticks == 0U) ||
-        (segment->pulse_width_ticks == 0U) ||
-        (segment->pulse_width_ticks >= segment->step_period_ticks))
+    if ((engine == NULL) || (engine->count >= STEP_ENGINE_QUEUE_CAPACITY) ||
+        !step_segment_is_valid(segment))
     {
         return false;
     }

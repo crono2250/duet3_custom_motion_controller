@@ -52,5 +52,6 @@ clock_sync_result_t clock_sync_observe(clock_sync_state_t *state,
 bool clock_sync_is_locked(const clock_sync_state_t *state);
 bool clock_sync_check_timeout(clock_sync_state_t *state, uint32_t uptime_millis);
 uint32_t clock_sync_to_master_time(const clock_sync_state_t *state, uint32_t local_time);
+uint32_t clock_sync_to_local_time(const clock_sync_state_t *state, uint32_t master_time);
 
 #endif

@@ -54,6 +54,7 @@ typedef struct
 } step_engine_t;
 
 void step_engine_init(step_engine_t *engine);
+bool step_segment_is_valid(const step_segment_t *segment);
 bool step_engine_enqueue(step_engine_t *engine, const step_segment_t *segment);
 bool step_engine_start(step_engine_t *engine, uint32_t now, step_event_t *event);
 bool step_engine_on_deadline(step_engine_t *engine, uint32_t now, step_event_t *event);

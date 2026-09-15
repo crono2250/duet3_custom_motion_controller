@@ -14,7 +14,7 @@ Duet 3 Expansion 1XDをリファレンスに、OpenPnP向け5軸STEP/DIR・リ�
 - 外部FDCAN割り込み受信queueとCAN-FD送信APIを含むnormal-mode build
 - 16-bit FDCAN timestampからmotion tickへのwrap-around対応変換
 - PA8 STEP、PB0 DIR、PB1 ENABLEによる単軸runtime（暫定pin contract）
-- 時刻同期とSTEP queueのnative host単体テスト
+- 時刻同期、STEP queue、protocol-neutral motion gatewayのnative host単体テスト
 - ELF、BIN、HEX、MAP、サイズ情報の生成
 - ベクタテーブルが`0x08000000`に配置され、割り込みと診断シンボルを含むこと
 
