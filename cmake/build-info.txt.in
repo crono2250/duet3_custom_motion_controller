@@ -8,4 +8,9 @@ bootloader_reserved_bytes=0
 compiler=@CMAKE_C_COMPILER_ID@ @CMAKE_C_COMPILER_VERSION@
 cmsis_core_commit=@CMSIS_CORE_COMMIT@
 cmsis_device_g4_commit=@CMSIS_DEVICE_G4_COMMIT@
-
+stm32g4_hal_commit=@STM32G4_HAL_COMMIT@
+system_clock_hz=168000000
+motion_clock_hz=750000
+fdcan_nominal_bitrate=1000000
+fdcan_data_bitrate=3000000
+fdcan_mode=internal_loopback_bringup

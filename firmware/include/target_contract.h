@@ -10,6 +10,7 @@ typedef struct
     uint32_t maximum_core_clock_hz;
     uint32_t duet_motion_clock_hz;
     uintptr_t fdcan_base;
+    uintptr_t motion_clock_timer_base;
     uintptr_t primary_step_timer_base;
     uintptr_t secondary_step_timer_base;
     uint8_t planned_remote_drivers;

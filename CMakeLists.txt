@@ -10,11 +10,13 @@ set(CMAKE_C_EXTENSIONS OFF)
 
 set(CMSIS_CORE_ROOT "" CACHE PATH "Path to an existing CMSIS_5 checkout")
 set(CMSIS_DEVICE_G4_ROOT "" CACHE PATH "Path to an existing cmsis-device-g4 checkout")
+set(STM32G4_HAL_ROOT "" CACHE PATH "Path to an existing stm32g4xx-hal-driver checkout")
 
 # Keep dependency revisions immutable. These commits are the peeled commits for
 # CMSIS_5 5.9.0 and cmsis-device-g4 v1.2.6 respectively.
 set(CMSIS_CORE_COMMIT "2b7495b8535bdcb306dac29b9ded4cfb679d7e5c")
 set(CMSIS_DEVICE_G4_COMMIT "25664ddc3a7624ae9627ae8c4c672073dc5b2539")
+set(STM32G4_HAL_COMMIT "6940aef00ac466305872e4153f41b52dc954d6cf")
 
 if(NOT CMSIS_CORE_ROOT)
   FetchContent_Declare(
@@ -40,15 +42,31 @@ if(NOT CMSIS_DEVICE_G4_ROOT)
   set(CMSIS_DEVICE_G4_ROOT "${cmsis_device_g4_SOURCE_DIR}")
 endif()
 
+if(NOT STM32G4_HAL_ROOT)
+  FetchContent_Declare(
+    stm32g4_hal
+    GIT_REPOSITORY https://github.com/STMicroelectronics/stm32g4xx-hal-driver.git
+    GIT_TAG ${STM32G4_HAL_COMMIT}
+    GIT_PROGRESS TRUE
+    SOURCE_SUBDIR _not_used_by_this_project
+  )
+  FetchContent_MakeAvailable(stm32g4_hal)
+  set(STM32G4_HAL_ROOT "${stm32g4_hal_SOURCE_DIR}")
+endif()
+
 set(CMSIS_CORE_INCLUDE "${CMSIS_CORE_ROOT}/CMSIS/Core/Include")
 set(CMSIS_DEVICE_G4_INCLUDE "${CMSIS_DEVICE_G4_ROOT}/Include")
 set(CMSIS_DEVICE_G4_TEMPLATES "${CMSIS_DEVICE_G4_ROOT}/Source/Templates")
+set(STM32G4_HAL_INCLUDE "${STM32G4_HAL_ROOT}/Inc")
+set(STM32G4_HAL_SOURCE "${STM32G4_HAL_ROOT}/Src")
 
 foreach(required_path IN ITEMS
     "${CMSIS_CORE_INCLUDE}/core_cm4.h"
     "${CMSIS_DEVICE_G4_INCLUDE}/stm32g431xx.h"
     "${CMSIS_DEVICE_G4_TEMPLATES}/system_stm32g4xx.c"
-    "${CMSIS_DEVICE_G4_TEMPLATES}/gcc/startup_stm32g431xx.s")
+    "${CMSIS_DEVICE_G4_TEMPLATES}/gcc/startup_stm32g431xx.s"
+    "${STM32G4_HAL_INCLUDE}/stm32g4xx_hal_fdcan.h"
+    "${STM32G4_HAL_SOURCE}/stm32g4xx_hal_fdcan.c")
   if(NOT EXISTS "${required_path}")
     message(FATAL_ERROR "Required CMSIS file is missing: ${required_path}")
   endif()
@@ -61,9 +79,23 @@ set(LINKER_SCRIPT "${CMAKE_CURRENT_SOURCE_DIR}/firmware/linker/STM32G431CBTx_FLA
 file(MAKE_DIRECTORY "${ARTIFACT_DIR}")
 
 add_executable(firmware
+  firmware/src/clock_sync.c
+  firmware/src/fdcan_loopback_stm32g431.c
+  firmware/src/interrupts.c
   firmware/src/main.c
+  firmware/src/motion_clock_stm32g431.c
+  firmware/src/platform_stm32g431.c
+  firmware/src/step_engine.c
   firmware/src/syscalls.c
   firmware/src/target_contract.c
+  "${STM32G4_HAL_SOURCE}/stm32g4xx_hal.c"
+  "${STM32G4_HAL_SOURCE}/stm32g4xx_hal_cortex.c"
+  "${STM32G4_HAL_SOURCE}/stm32g4xx_hal_fdcan.c"
+  "${STM32G4_HAL_SOURCE}/stm32g4xx_hal_gpio.c"
+  "${STM32G4_HAL_SOURCE}/stm32g4xx_hal_pwr.c"
+  "${STM32G4_HAL_SOURCE}/stm32g4xx_hal_pwr_ex.c"
+  "${STM32G4_HAL_SOURCE}/stm32g4xx_hal_rcc.c"
+  "${STM32G4_HAL_SOURCE}/stm32g4xx_hal_rcc_ex.c"
   "${CMSIS_DEVICE_G4_TEMPLATES}/system_stm32g4xx.c"
   "${CMSIS_DEVICE_G4_TEMPLATES}/gcc/startup_stm32g431xx.s"
 )
@@ -78,6 +110,7 @@ target_include_directories(firmware PRIVATE
   firmware/include
   "${CMSIS_CORE_INCLUDE}"
   "${CMSIS_DEVICE_G4_INCLUDE}"
+  "${STM32G4_HAL_INCLUDE}"
 )
 
 target_compile_definitions(firmware PRIVATE
@@ -155,5 +188,10 @@ configure_file(
 configure_file(
   "${CMSIS_DEVICE_G4_ROOT}/LICENSE.md"
   "${ARTIFACT_DIR}/LICENSE-CMSIS-Device-G4.txt"
+  COPYONLY
+)
+configure_file(
+  "${STM32G4_HAL_ROOT}/LICENSE.md"
+  "${ARTIFACT_DIR}/LICENSE-STM32G4-HAL.txt"
   COPYONLY
 )

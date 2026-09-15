@@ -6,7 +6,7 @@
 
 STM32G431CBT6でDuet Expansion互換ノードを試作することは、CPU・FDCAN・タイマ機能の面では可能です。ただし、**5軸対応の完成版を128KiB Flashへ収められるかは未確認で、現時点の最大リスク**です。まず1軸・最小I/Oに絞ったPoCでCAN列挙、時刻同期、motion executorを成立させ、コードサイズと割り込み遅延を測定する必要があります。
 
-今回のCIはMCU向けコンパイラ、startup、リンカ、CMSIS peripheral contractが成立することを検証します。Duet CAN互換性や実時間性能を証明するものではありません。
+今回のCIはMCU向けコンパイラ、startup、リンカ、CMSIS/HAL peripheral contractに加え、時刻同期と単軸STEPセグメント実行器のホスト単体テストを検証します。実機上のFDCAN内部ループバックも組み込みましたが、外部CAN互換性や実時間性能を証明するものではありません。
 
 ## 固定した調査ベースライン
 
@@ -17,6 +17,7 @@ STM32G431CBT6でDuet Expansion互換ノードを試作することは、CPU・FD
 | Duet3Expansion `3.7-stm` | `d3ab5eb38fbae68319cae8dd6235ac7a420843d8` | 上流STM32H5実験実装の参考 |
 | CMSIS_5 5.9.0 | `2b7495b8535bdcb306dac29b9ded4cfb679d7e5c` | Cortex-M4 core headers |
 | CMSIS Device G4 v1.2.6 | `25664ddc3a7624ae9627ae8c4c672073dc5b2539` | G431 device headers/startup/system |
+| STM32G4 HAL v1.2.6 | `6940aef00ac466305872e4153f41b52dc954d6cf` | FDCAN、clock、power初期化 |
 
 Duet3Expansion/CANlibはCIへまだリンクしていません。まずライセンス境界とSTM32プラットフォームAPIを明確にした後、上記revisionを基準に段階移植します。
 
@@ -55,13 +56,14 @@ Duet3Expansion/CANlibはCIへまだリンクしていません。まずライセ
 
 ## 段階的な合格条件
 
-1. 本CIでG431のELF/BIN/HEXを再現生成できる。
-2. 評価基板でFDCAN nominal/data phase通信とRX timestampを測定できる。
-3. 750kHzのlocal motion clockを実装し、1XDとclock sync収束値を比較できる。
-4. remote GPIO 1入力/1出力がRRFから操作できる。
-5. remote driver 1軸のSTEP/DIRを1XDと比較し、開始時刻・周期・加減速波形が一致する。
-6. Flash/SRAM/ISR負荷に余裕がある場合のみ5軸へ拡張する。
-7. bootloader partitionとCAN updateを確定し、CI linker budgetへ反映する。
+1. 本CIでG431のELF/BIN/HEXを再現生成できる。**完了**
+2. 168MHz system clock、750kHz local motion clock、FDCAN内部ループバックを実装する。**実装完了・実機確認待ち**
+3. 評価基板でFDCAN nominal/data phase通信とRX timestampを測定できる。
+4. 750kHzのlocal motion clockとclock sync収束値を1XDと比較できる。
+5. remote GPIO 1入力/1出力がRRFから操作できる。
+6. remote driver 1軸のSTEP/DIRを1XDと比較し、開始時刻・周期・加減速波形が一致する。
+7. Flash/SRAM/ISR負荷に余裕がある場合のみ5軸へ拡張する。
+8. bootloader partitionとCAN updateを確定し、CI linker budgetへ反映する。
 
 ## 参照先
 

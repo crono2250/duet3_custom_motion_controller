@@ -15,6 +15,24 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  host-tests:
+    name: Motion core / Host tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Configure tests
+        run: cmake -S tests -B build/host-tests -G Ninja -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build tests
+        run: cmake --build build/host-tests --verbose
+
+      - name: Run tests
+        run: ctest --test-dir build/host-tests --output-on-failure
+
   stm32g431cb:
     name: STM32G431CBT6 / Release
     runs-on: ubuntu-24.04
